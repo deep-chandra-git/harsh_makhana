@@ -388,7 +388,7 @@ h1, h2, h3, h4, h5, h6 {
     width: 100%;
     height: 100vh;
     min-height: 550px;
-    background-image: url('../images/Shop_Premium_Makhana.png');
+    background-image: url('/static/images/Shop_Premium_Makhana.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -442,7 +442,7 @@ h1, h2, h3, h4, h5, h6 {
     width: 100%;
     height: 100vh;
     min-height: 550px;
-    background-image: url('../images/About_Harsh_Makhana.png');
+    background-image: url('/static/images/About_Harsh_Makhana.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -497,7 +497,7 @@ h1, h2, h3, h4, h5, h6 {
     width: 100%;
     height: 100vh;
     min-height: 550px;
-    background-image: url('../../static/images/Contact_Us.png');
+    background-image: url('/static/images/Contact_Us.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
