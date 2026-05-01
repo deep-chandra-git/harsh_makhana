@@ -1,0 +1,99 @@
+{% load static %}
+<div class="products-grid">
+    {% for product in products %}
+    <div class="product-item" data-product-id="{{ product.id }}">
+        <div class="product-card-modern">
+            <!-- Product Image -->
+            <div class="product-image-area">
+                <a href="{% url 'product_detail' product.slug %}" class="product-image-link">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                </a>
+                
+                <!-- Badges -->
+                <div class="product-badges">
+                    {% if product.discount_percentage %}
+                    <span class="badge-sale">-{{ product.discount_percentage }}%</span>
+                    {% endif %}
+                    {% if product.is_new %}
+                    <span class="badge-new">New</span>
+                    {% endif %}
+                </div>
+                
+                <!-- Wishlist Quick Action -->
+                <div class="product-quick-actions">
+                    {% if user.is_authenticated %}
+                    <button type="button" class="quick-action-btn wishlist-ajax-btn" data-product-id="{{ product.id }}" title="Add to Wishlist">
+                        <i class="{% if product.id in wishlist_ids %}fas{% else %}far{% endif %} fa-heart"></i>
+                    </button>
+                    {% else %}
+                    <a href="{% url 'login' %}?next={{ request.path }}" class="quick-action-btn" title="Login to Wishlist">
+                        <i class="far fa-heart"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Product Info -->
+            <div class="product-info-area">
+                <a href="{% url 'product_detail' product.slug %}" class="product-title-link">
+                    <h3 class="product-name">{{ product.name }}</h3>
+                </a>
+                <p class="product-excerpt">{{ product.short_description|truncatechars:60 }}</p>
+                
+                <div class="product-meta">
+                    <div class="product-price-box">
+                        <span class="price-current">₹{{ product.discounted_price|floatformat:0 }}</span>
+                        {% if product.original_price %}
+                        <span class="price-original">₹{{ product.original_price|floatformat:0 }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="product-rating-box">
+                        <div class="stars">
+                            {% with rating=product.average_rating|default:4.5|floatformat:0 %}
+                            {% for i in "12345"|make_list %}
+                                {% if forloop.counter <= rating|add:0 %}
+                                    <i class="fas fa-star"></i>
+                                {% else %}
+                                    <i class="far fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                            {% endwith %}
+                        </div>
+                        <span class="rating-count">({{ product.review_count|default:0 }})</span>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons - AJAX Enabled -->
+                <div class="product-actions-modern">
+                    {% if user.is_authenticated %}
+                    <button type="button" class="btn-cart ajax-add-to-cart-btn" data-product-id="{{ product.id }}" data-quantity="1">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>Add to Cart</span>
+                    </button>
+                    <button type="button" class="btn-buy ajax-buy-now-btn" data-product-id="{{ product.id }}" data-quantity="1">
+                        <i class="fas fa-bolt"></i>
+                        <span>Buy Now</span>
+                    </button>
+                    {% else %}
+                    <a href="{% url 'login' %}?next={{ request.path }}" class="btn-cart">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>Login to Buy</span>
+                    </a>
+                    <a href="{% url 'login' %}?next={{ request.path }}" class="btn-buy">
+                        <i class="fas fa-bolt"></i>
+                        <span>Login to Buy</span>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center py-5 empty-products" style="grid-column: 1 / -1;">
+        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+        <h4>No products found</h4>
+        <p class="text-muted">Try adjusting your search or filter criteria</p>
+        <a href="{% url 'shop' %}" class="btn-gold-modern">Clear Filters</a>
+    </div>
+    {% endfor %}
+</div>

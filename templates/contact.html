@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Harsh Makhana – Contact Us</title>
+  <link rel="shortcut icon" href="{% static 'images/logo.png' %}" type="image/x-icon">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/header.css' %}">
+  <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+</head>
+<body>
+
+  <!-- Include Header -->
+  {% include 'includes/header.html' %}
+
+  <!-- CONTACT HERO -->
+  <section class="contact-hero-fullscreen">
+    <div class="contact-hero-overlay"></div>
+    <div class="container h-100">
+      <div class="contact-hero-content text-center">
+        <h1 class="display-4 fw-bold animate-title">Contact Us</h1>
+        <p class="lead animate-text">We are always happy to hear from you. Our team is here to help.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT INFO CARDS -->
+  <section class="contact-info py-5">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-md-3 col-sm-6">
+          <div class="contact-info-card">
+            <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+            <h4>Office Address</h4>
+            <p>{{ contact_info.address|default:"Makhana House, Okhla Phase-3, New Delhi" }}</p>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <div class="contact-info-card">
+            <div class="contact-icon"><i class="fas fa-phone-alt"></i></div>
+            <h4>Phone Number</h4>
+            <p>{{ contact_info.phone1|default:"+91 98765 43210" }}</p>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <div class="contact-info-card">
+            <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+            <h4>Email Address</h4>
+            <p>{{ contact_info.email1|default:"hello@harshmakhana.com" }}</p>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <div class="contact-info-card">
+            <div class="contact-icon"><i class="fas fa-clock"></i></div>
+            <h4>Business Hours</h4>
+            <p>Mon - Sat: 9AM - 7PM<br>Sunday: Closed</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT FORM -->
+  <section class="contact-form-section py-5 bg-light">
+    <div class="container">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-6">
+          <div class="form-content">
+            <h2 class="section-title-left">Send Us a Message</h2>
+            
+            <!-- Alert container for AJAX messages -->
+            <div id="contactAlertContainer"></div>
+            
+            <form id="contactFormAjax" method="POST">
+              {% csrf_token %}
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <input type="text" name="full_name" id="contact_full_name" class="form-control" placeholder="Full Name" required>
+                  <div class="invalid-feedback" id="error_full_name"></div>
+                </div>
+                <div class="col-md-6">
+                  <input type="email" name="email" id="contact_email" class="form-control" placeholder="Email Address" required>
+                  <div class="invalid-feedback" id="error_email"></div>
+                </div>
+                <div class="col-md-6">
+                  <input type="tel" name="phone" id="contact_phone" class="form-control" placeholder="Phone Number">
+                  <div class="invalid-feedback" id="error_phone"></div>
+                </div>
+                <div class="col-md-6">
+                  <input type="text" name="subject" id="contact_subject" class="form-control" placeholder="Subject" required>
+                  <div class="invalid-feedback" id="error_subject"></div>
+                </div>
+                <div class="col-12">
+                  <textarea name="message" id="contact_message" class="form-control" rows="5" placeholder="Your Message" required></textarea>
+                  <div class="invalid-feedback" id="error_message"></div>
+                </div>
+                <div class="col-12">
+                  <button type="submit" id="contactSubmitBtn" class="btn btn-gold btn-lg">
+                    Send Message <i class="fas fa-paper-plane ms-2"></i>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <img src="{% static 'images/Send_Us_a_Message.png' %}" alt="Contact" class="img-fluid rounded-4 shadow-lg">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAP SECTION -->
+  <section class="map-section py-5">
+    <div class="container">
+      <div class="text-center mb-4">
+        <h2 class="section-title-center">Find Our Location</h2>
+      </div>
+      <div class="map-wrapper">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3503.789841184942!2d77.280721!3d28.568483!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce44f4c0e8e2d%3A0x7a5e8f9e3c2b4a1f!2sOkhla%20Phase%203%2C%20New%20Delhi%2C%20Delhi!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" 
+                width="100%" height="400" style="border:0; border-radius: 24px;" allowfullscreen="" loading="lazy">
+        </iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- Include Footer -->
+  {% include 'includes/footer.html' %}
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{% static 'js/script.js' %}"></script>
+  <script src="{% static 'js/header.js' %}"></script>
+  <script src="{% static 'js/footer.js' %}"></script>
+</body>
+</html>

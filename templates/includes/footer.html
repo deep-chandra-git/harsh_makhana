@@ -1,0 +1,71 @@
+{% load static %}
+<!-- ==================== FOOTER ==================== -->
+<footer class="footer mt-5 pt-5 pb-4">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-4 col-md-6">
+        <div class="d-flex align-items-center mb-3">
+          <img src="{% static 'images/logo.png' %}" alt="Harsh Makhana" class="footer-logo me-2" onerror="this.src='https://placehold.co/40x40/e6a017/ffffff?text=HM'">
+          <h4 class="mb-0 text-gold">Harsh Makhana</h4>
+        </div>
+        <p class="text-light-80">India's most loved premium makhana brand. Crunchy, healthy, and packed with authentic flavors. Redefining smart snacking since 2020.</p>
+        <div class="social-icons mt-3">
+          <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      
+      <div class="col-lg-2 col-md-6">
+        <h5 class="text-gold mb-3">Quick Links</h5>
+        <ul class="list-unstyled footer-links">
+          <li><a href="{% url 'index' %}">Home</a></li>
+          <li><a href="{% url 'shop' %}">Shop</a></li>
+          <li><a href="{% url 'about' %}">About Us</a></li>
+          <li><a href="{% url 'contact' %}">Contact</a></li>
+          <li><a href="{% url 'terms' %}">Terms & Conditions</a></li>
+        </ul>
+      </div>
+      
+      <div class="col-lg-2 col-md-6">
+        <h5 class="text-gold mb-3">Customer Care</h5>
+        <ul class="list-unstyled footer-links">
+          <li><a href="{% url 'contact' %}#faqSection">FAQs</a></li>
+          <li><a href="#" class="footer-link-protected" data-section="shipping">Shipping Info</a></li>
+          <li><a href="#" class="footer-link-protected" data-section="returns">Returns Policy</a></li>
+          <li><a href="#" class="footer-link-protected" data-section="privacy">Privacy Policy</a></li>
+          <li><a href="#" class="footer-link-protected" data-section="order">Track Order</a></li>
+        </ul>
+      </div>
+      
+      <div class="col-lg-4 col-md-6">
+        <h5 class="text-gold mb-3">Newsletter & Offers</h5>
+        <p>Subscribe to get 15% off on your first order + exclusive deals.</p>
+        <form method="POST" action="{% url 'subscribe_newsletter' %}" id="newsletterForm">
+          {% csrf_token %}
+          <div class="input-group mb-3">
+            <input type="email" name="email" class="form-control bg-white text-dark border-1" placeholder="Your email address" required>
+            <button class="btn btn-gold" type="submit">Subscribe</button>
+          </div>
+        </form>
+        <div class="mt-4">
+          <h6 class="text-gold">Secure Payments</h6>
+          <div class="payment-icons mt-2">
+            <i class="fab fa-cc-visa fa-2x me-2"></i>
+            <i class="fab fa-cc-mastercard fa-2x me-2"></i>
+            <i class="fab fa-cc-amex fa-2x me-2"></i>
+            <i class="fab fa-cc-paypal fa-2x"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr class="my-4 bg-secondary">
+    <div class="row">
+      <div class="col-12 text-center">
+        <p class="mb-0 small">© {% now "Y" %} Harsh Makhana. All rights reserved. | Designed and developed by <a href="https://paultechsoftwareservices.com" target="_blank" class="text-gold text-decoration-none">PaulTech Software Services Pvt. Ltd.</a></p>
+      </div>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Harsh Makhana – My Wishlist</title>
+  <link rel="shortcut icon" href="{% static 'images/logo.png' %}" type="image/x-icon">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/header.css' %}">
+  <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+</head>
+<body>
+
+  <!-- Include Header -->
+  {% include 'includes/header.html' %}
+
+  <!-- ==================== WISHLIST PRODUCTS SECTION ==================== -->
+  <section class="wishlist-products py-5">
+    <div class="container">
+      <div class="quick-actions mb-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+          <h2 class="mb-0">My Wishlist</h2>
+          <div class="d-flex gap-3">
+            <form method="POST" action="{% url 'move_all_to_cart' %}" id="moveAllToCartForm" style="display: inline;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-outline-gold" id="moveAllToCartBtn">
+                <i class="fas fa-cart-plus me-2"></i> Move All to Cart
+              </button>
+            </form>
+            <form method="POST" action="{% url 'clear_wishlist' %}" id="clearWishlistForm" style="display: inline;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-outline-danger" id="clearWishlistBtn">
+                <i class="fas fa-trash-alt me-2"></i> Clear Wishlist
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div id="wishlistItemsList" class="row g-4">
+        {% if wishlist_items %}
+          {% for item in wishlist_items %}
+          <div class="col-md-3 col-sm-6 wishlist-item" data-item-id="{{ item.id }}" data-product-id="{{ item.product.id }}">
+            <div class="product-card wishlist-product-card">
+              <div class="product-img-wrapper position-relative">
+                <a href="{% url 'product_detail' item.product.slug %}" class="product-link">
+                  <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="product-img">
+                </a>
+              </div>
+              <div class="product-body">
+                <a href="{% url 'product_detail' item.product.slug %}" class="product-title-link">
+                  <h5 class="product-title">{{ item.product.name }}</h5>
+                </a>
+                <div class="product-price">
+                  <span class="current-price">₹{{ item.product.discounted_price|floatformat:0 }}</span>
+                  {% if item.product.original_price %}
+                  <span class="original-price">₹{{ item.product.original_price|floatformat:0 }}</span>
+                  {% endif %}
+                </div>
+                <div class="product-rating">
+                  <i class="fas fa-star text-warning"></i>
+                  <span>{{ item.product.average_rating|default:4.5 }}</span>
+                  <span class="review-count">({{ item.product.review_count|default:0 }})</span>
+                </div>
+                <div class="product-actions mt-3">
+                  <button type="button" class="btn btn-sm btn-gold w-100 move-to-cart-btn" data-product-id="{{ item.product.id }}">
+                    <i class="fas fa-shopping-bag me-1"></i> Move to Cart
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="col-12 text-center py-5">
+            <i class="far fa-heart fa-4x text-muted mb-3"></i>
+            <h3>Your Wishlist is Empty</h3>
+            <p class="text-muted">Save your favorite items here to purchase them later!</p>
+            <a href="{% url 'shop' %}" class="btn btn-gold mt-3">Continue Shopping <i class="fas fa-arrow-right ms-2"></i></a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  <!-- Include Footer -->
+  {% include 'includes/footer.html' %}
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{% static 'js/script.js' %}"></script>
+  <script src="{% static 'js/header.js' %}"></script>
+  <script src="{% static 'js/footer.js' %}"></script>
+</body>
+</html>

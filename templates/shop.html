@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Harsh Makhana – Shop Premium Makhana</title>
+  <link rel="shortcut icon" href="{% static 'images/logo.png' %}" type="image/x-icon">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/header.css' %}">
+  <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+</head>
+<body>
+
+  {% include 'includes/header.html' %}
+
+  <!-- ==================== SHOP HERO SECTION ==================== -->
+  <section class="shop-hero-fullscreen">
+    <div class="shop-hero-overlay"></div>
+    <div class="container h-100">
+      <div class="shop-hero-content text-center">
+        <h1 class="display-4 fw-bold animate-title">Shop Premium Makhana</h1>
+        <p class="lead animate-text">Discover our range of healthy, crunchy, and delicious makhana flavors</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FILTER SECTION ==================== -->
+  <section class="shop-filter-section">
+    <div class="container">
+      <div class="filter-container">
+        <div class="filter-categories">
+          <div class="categories-wrapper">
+            <a href="{% url 'shop' %}" class="category-chip {% if not current_category %}active{% endif %}" data-category="all">All Products</a>
+            {% for category in categories %}
+            <a href="{% url 'shop' %}?category={{ category.slug }}" class="category-chip {% if current_category == category.slug %}active{% endif %}" data-category="{{ category.slug }}">
+              {{ category.name }}
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="filter-actions">
+          <div class="sort-wrapper">
+            <i class="fas fa-sort-amount-down-alt sort-icon"></i>
+            <select class="sort-select" id="sortSelect">
+              <option value="popular" {% if current_sort == 'popular' %}selected{% endif %}>Popular</option>
+              <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>Newest First</option>
+              <option value="price_low" {% if current_sort == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+              <option value="price_high" {% if current_sort == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      
+      {% if search_query or current_category %}
+      <div class="active-filters-bar">
+        {% if search_query %}
+        <span class="active-filter-tag">
+          <i class="fas fa-search"></i> "{{ search_query }}"
+          <a href="{% url 'shop' %}" class="ms-2 text-decoration-none">&times;</a>
+        </span>
+        {% endif %}
+        {% if current_category %}
+        <span class="active-filter-tag">
+          <i class="fas fa-filter"></i> {{ current_category|title }}
+          <a href="{% url 'shop' %}" class="ms-2 text-decoration-none">&times;</a>
+        </span>
+        {% endif %}
+        <a href="{% url 'shop' %}" class="clear-all-filters ms-2">Clear All</a>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- ==================== PRODUCTS GRID SECTION ==================== -->
+  <section class="shop-products-section">
+    <div class="container">
+      <div class="products-grid" id="productsGridContainer">
+        {% for product in products %}
+        <div class="product-item" data-product-id="{{ product.id }}">
+          <div class="product-card-modern">
+            <div class="product-image-area">
+              <a href="{% url 'product_detail' product.slug %}" class="product-image-link">
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+              </a>
+              {% if product.discount_percentage > 0 %}
+              <div class="product-badges">
+                <span class="badge-sale">-{{ product.discount_percentage }}%</span>
+              </div>
+              {% endif %}
+              {% if product.is_new %}
+              <div class="product-badges">
+                <span class="badge-new">New</span>
+              </div>
+              {% endif %}
+              <div class="product-quick-actions">
+                <button class="quick-action-btn wishlist-btn" data-product-id="{{ product.id }}">
+                  <i class="{% if product.id in wishlist_ids %}fas{% else %}far{% endif %} fa-heart"></i>
+                </button>
+              </div>
+            </div>
+            <div class="product-info-area">
+              <a href="{% url 'product_detail' product.slug %}" class="product-title-link">
+                <h3 class="product-name">{{ product.name }}</h3>
+              </a>
+              <p class="product-excerpt">{{ product.short_description|truncatechars:60 }}</p>
+              <div class="product-meta">
+                <div class="product-price-box">
+                  <span class="price-current">₹{{ product.discounted_price|floatformat:0 }}</span>
+                  {% if product.original_price %}
+                  <span class="price-original">₹{{ product.original_price|floatformat:0 }}</span>
+                  {% endif %}
+                </div>
+                <div class="product-rating-box">
+                  <div class="stars">
+                    {% with rating=product.average_rating|default:4.5|floatformat:"0" %}
+                    {% for i in "12345"|make_list %}
+                      {% if forloop.counter <= rating|add:"0" %}
+                        <i class="fas fa-star"></i>
+                      {% elif forloop.counter <= rating|add:"0"|add:"0.5" %}
+                        <i class="fas fa-star-half-alt"></i>
+                      {% else %}
+                        <i class="far fa-star"></i>
+                      {% endif %}
+                    {% endfor %}
+                    {% endwith %}
+                  </div>
+                  <span class="rating-count">({{ product.review_count|default:0 }})</span>
+                </div>
+              </div>
+              <div class="product-actions-modern">
+                <button class="btn-cart add-to-cart-btn" data-product-id="{{ product.id }}">
+                  <i class="fas fa-shopping-cart"></i> Add to Cart
+                </button>
+                <button class="btn-buy buy-now-btn" data-product-id="{{ product.id }}">
+                  <i class="fas fa-bolt"></i> Buy Now
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="empty-state-wrapper">
+          <div class="empty-state-modern text-center">
+            <div class="empty-state-icon">
+              <i class="fas fa-search"></i>
+            </div>
+            <h3>No Products Found</h3>
+            <p>We couldn't find any products matching your criteria.</p>
+            <a href="{% url 'shop' %}" class="btn-gold-modern">Clear Filters</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Pagination -->
+      {% if products.has_other_pages %}
+      <div class="pagination-modern">
+        <div class="pagination-container">
+          {% if products.has_previous %}
+          <a href="?page={{ products.previous_page_number }}{% if current_category %}&category={{ current_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}" class="pagination-prev">
+            <i class="fas fa-chevron-left"></i> Previous
+          </a>
+          {% else %}
+          <span class="pagination-prev disabled">
+            <i class="fas fa-chevron-left"></i> Previous
+          </span>
+          {% endif %}
+
+          <div class="pagination-numbers">
+            {% for i in products.paginator.page_range %}
+              {% if products.number == i %}
+              <span class="page-number active">{{ i }}</span>
+              {% elif i > products.number|add:'-3' and i < products.number|add:'3' %}
+              <a href="?page={{ i }}{% if current_category %}&category={{ current_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}" class="page-number">{{ i }}</a>
+              {% endif %}
+            {% endfor %}
+          </div>
+
+          {% if products.has_next %}
+          <a href="?page={{ products.next_page_number }}{% if current_category %}&category={{ current_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}" class="pagination-next">
+            Next <i class="fas fa-chevron-right"></i>
+          </a>
+          {% else %}
+          <span class="pagination-next disabled">
+            Next <i class="fas fa-chevron-right"></i>
+          </span>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+
+  {% include 'includes/footer.html' %}
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{% static 'js/script.js' %}"></script>
+  <script src="{% static 'js/header.js' %}"></script>
+  <script src="{% static 'js/footer.js' %}"></script>
+</body>
+</html>

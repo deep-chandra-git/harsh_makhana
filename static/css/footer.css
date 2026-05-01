@@ -1,0 +1,188 @@
+/* ==================== FOOTER STYLES ==================== */
+.footer {
+    background-color: var(--footer-bg);
+    color: #cfc5b5;
+    border-top: 3px solid var(--primary-gold);
+    padding: 60px 0 30px;
+    margin-top: 60px;
+}
+
+.footer-logo {
+    width: 45px;
+    height: 45px;
+    object-fit: contain;
+    border-radius: 12px;
+}
+
+.text-light-80 {
+    color: rgba(220, 210, 195, 0.85);
+    line-height: 1.6;
+}
+
+/* Social Icons */
+.social-icons a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+    transition: var(--transition-smooth);
+    margin-right: 10px;
+    color: #e2dcd2;
+    text-decoration: none;
+}
+
+.social-icons a:hover {
+    background: var(--primary-gold);
+    color: #1a1a1a;
+    transform: translateY(-3px);
+}
+
+/* Footer Links */
+.footer-links {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links li {
+    margin-bottom: 12px;
+}
+
+.footer-links a {
+    color: #cfc5b5;
+    text-decoration: none;
+    transition: var(--transition-smooth);
+    font-size: 0.9rem;
+}
+
+.footer-links a:hover {
+    color: var(--primary-gold);
+    padding-left: 5px;
+}
+
+.text-gold {
+    color: var(--primary-gold);
+}
+
+/* Newsletter Form - Input and Button (Capsule/Pill Style) */
+.footer .input-group {
+    display: flex;
+    width: 100%;
+    border-radius: 50px;
+    overflow: hidden;
+    background: white;
+}
+
+.footer .input-group .form-control.bg-white {
+    background-color: white !important;
+    color: #2a2a2a !important;
+    border: 1px solid #ddd;
+    border-right: none;
+    border-radius: 50px 0 0 50px !important;
+    flex: 1;
+    padding: 10px 16px;
+}
+
+.footer .input-group .form-control.bg-white:focus {
+    border-color: var(--primary-gold);
+    box-shadow: none;
+    outline: none;
+}
+
+/* Subscribe Button - Capsule/Pill Style Restored */
+.footer .btn-gold {
+    background-color: var(--primary-gold) !important;
+    border: 1px solid var(--primary-gold) !important;
+    color: #2c2b28 !important;
+    font-weight: 600 !important;
+    padding: 10px 24px !important;
+    border-radius: 0 50px 50px 0 !important;
+    transition: var(--transition-smooth) !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    white-space: nowrap !important;
+}
+
+.footer .btn-gold:hover {
+    background-color: var(--primary-dark) !important;
+    border-color: var(--primary-dark) !important;
+    color: white !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Payment Icons */
+.payment-icons i {
+    color: #cfc5b5;
+    transition: var(--transition-smooth);
+    cursor: default;
+    margin-right: 8px;
+}
+
+.payment-icons i:hover {
+    color: var(--primary-gold);
+    transform: scale(1.05);
+}
+
+/* Footer link styles */
+.footer a.text-gold {
+    text-decoration: none;
+}
+
+.footer a.text-gold:hover {
+    text-decoration: underline;
+}
+
+/* Horizontal Rule */
+.footer hr {
+    border-color: rgba(255, 255, 255, 0.1);
+    margin: 30px 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .footer .row {
+        text-align: center;
+    }
+    
+    .social-icons {
+        justify-content: center;
+    }
+    
+    .payment-icons {
+        justify-content: center;
+    }
+    
+    .footer .input-group {
+        max-width: 300px;
+        margin: 0 auto;
+    }
+    
+    .footer-links {
+        text-align: center;
+    }
+    
+    .footer-links a:hover {
+        padding-left: 0;
+    }
+}
+
+@media (max-width: 576px) {
+    .footer {
+        padding: 40px 0 20px;
+        margin-top: 40px;
+    }
+    
+    .footer .btn-gold {
+        padding: 8px 16px !important;
+        font-size: 0.8rem !important;
+    }
+    
+    .footer .input-group .form-control.bg-white {
+        font-size: 0.8rem;
+        padding: 8px 12px;
+    }
+}

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Harsh Makhana – My Profile | Account Dashboard</title>
+  <link rel="shortcut icon" href="{% static 'images/logo.png' %}" type="image/x-icon">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/header.css' %}">
+  <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+</head>
+<body>
+
+  {% include 'includes/header.html' %}
+
+  <!-- ==================== PROFILE DASHBOARD ==================== -->
+  <section class="profile-dashboard py-5">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-3">
+          <div class="profile-sidebar">
+            <div class="sidebar-user text-center">
+              <div class="profile-avatar-placeholder">
+                {% if user_profile.avatar %}
+                <img src="{{ user_profile.avatar.url }}" alt="{{ user_profile.full_name }}" class="profile-avatar-img rounded-circle" width="80" height="80">
+                {% else %}
+                <i class="fas fa-user-circle fa-4x"></i>
+                {% endif %}
+              </div>
+              <h5>{{ user_profile.full_name|default:"Welcome!" }}</h5>
+              <p class="text-muted small">{{ user_profile.email|default:"" }}</p>
+              {% if user_profile.phone %}
+              <p class="text-muted small"><i class="fas fa-phone-alt me-1"></i> {{ user_profile.phone }}</p>
+              {% endif %}
+            </div>
+            <ul class="sidebar-nav">
+              <li class="active" data-section="personal"><i class="fas fa-user"></i> Personal Info</li>
+              <li data-section="address"><i class="fas fa-map-marker-alt"></i> Address Book</li>
+              <li data-section="order"><i class="fas fa-shopping-bag"></i> My Orders</li>
+              <li data-section="security"><i class="fas fa-lock"></i> Security</li>
+              <li data-section="logout"><i class="fas fa-sign-out-alt"></i> Logout</li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-9">
+          
+          <!-- Alert Container for Dynamic Messages -->
+          <div id="profileAlertContainer"></div>
+          
+          <!-- Personal Information Section -->
+          <div id="personalSection" class="profile-section active-section">
+            <div class="section-header">
+              <h3><i class="fas fa-user-circle me-2"></i> Personal Information</h3>
+              <p>Update your personal details</p>
+            </div>
+            <div class="section-card">
+              <form method="POST" action="{% url 'update_profile' %}" id="personalInfoForm">
+                {% csrf_token %}
+                <div class="row g-3">
+                  <div class="col-md-12">
+                    <label class="form-label">Full Name</label>
+                    <div class="input-group-with-icon">
+                      <span class="input-icon"><i class="fas fa-user"></i></span>
+                      <input type="text" class="form-control" name="full_name" id="fullName" placeholder="Enter your full name" value="{{ user_profile.full_name|default:'' }}" required>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Email Address</label>
+                    <div class="input-group-with-icon">
+                      <span class="input-icon"><i class="fas fa-envelope"></i></span>
+                      <input type="email" class="form-control" name="email" id="emailAddress" placeholder="Enter your email" value="{{ user_profile.email|default:'' }}" readonly>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Phone Number</label>
+                    <div class="input-group-with-icon">
+                      <span class="input-icon"><i class="fas fa-phone"></i></span>
+                      <input type="tel" class="form-control" name="phone" id="phoneNumber" placeholder="+91 98765 43210" value="{{ user_profile.phone|default:'' }}">
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <label class="form-label">Gender</label>
+                    <div class="d-flex gap-3 mt-2">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="gender" id="male" value="male" {% if user_profile.gender == 'male' %}checked{% endif %}>
+                        <label class="form-check-label" for="male">Male</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="gender" id="female" value="female" {% if user_profile.gender == 'female' %}checked{% endif %}>
+                        <label class="form-check-label" for="female">Female</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="gender" id="other" value="other" {% if user_profile.gender == 'other' %}checked{% endif %}>
+                        <label class="form-check-label" for="other">Other</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="mt-4">
+                  <button type="submit" class="btn btn-gold">Update Profile <i class="fas fa-save ms-2"></i></button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Address Book Section -->
+          <div id="addressSection" class="profile-section">
+            <div class="section-header">
+              <h3><i class="fas fa-map-marker-alt me-2"></i> Address Book</h3>
+              <p>Manage your shipping addresses</p>
+            </div>
+            <div class="row g-3" id="addressListContainer">
+              {% for address in addresses %}
+              <div class="col-md-6" id="addressCard_{{ address.id }}">
+                <div class="address-card {% if address.is_default %}default{% endif %}">
+                  {% if address.is_default %}
+                  <div class="address-badge">Default</div>
+                  {% endif %}
+                  <h5>{{ address.name|default:"Address" }}</h5>
+                  <p class="mb-1"><strong>{{ address.full_name }}</strong></p>
+                  <p class="mb-0">{{ address.address_line1 }}<br>
+                  {% if address.address_line2 %}{{ address.address_line2 }}<br>{% endif %}
+                  {{ address.city }}, {{ address.state }} - {{ address.pincode }}<br>
+                  Phone: {{ address.phone }}</p>
+                  <div class="address-actions mt-3">
+                    <button class="btn-icon edit-address" data-address-id="{{ address.id }}" data-bs-toggle="modal" data-bs-target="#editAddressModal">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-icon delete-address" data-address-id="{{ address.id }}">
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              {% empty %}
+              <div class="col-12">
+                <div class="address-card text-center">
+                  <p class="text-muted">No addresses saved yet.</p>
+                </div>
+              </div>
+              {% endfor %}
+              <div class="col-12">
+                <button class="btn btn-outline-gold" id="addNewAddressBtn" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+                  <i class="fas fa-plus me-2"></i> Add New Address
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- My Orders Section -->
+          <div id="orderSection" class="profile-section">
+            <div class="section-header">
+              <h3><i class="fas fa-shopping-bag me-2"></i> My Orders</h3>
+              <p>View and track your orders</p>
+            </div>
+            <div class="orders-list">
+              {% for order in orders %}
+              <div class="order-card">
+                <div class="order-header">
+                  <div><span class="order-label">Order #</span><span class="order-value">{{ order.order_id }}</span></div>
+                  <div><span class="order-label">Date</span><span class="order-value">{{ order.created_at|date:"M d, Y" }}</span></div>
+                  <div><span class="order-label">Total</span><span class="order-value">₹{{ order.total_amount|floatformat:0 }}</span></div>
+                  <div>
+                    {% if order.status == 'Delivered' %}
+                    <span class="badge status-delivered">{{ order.status }}</span>
+                    {% elif order.status == 'Processing' %}
+                    <span class="badge status-processing">{{ order.status }}</span>
+                    {% elif order.status == 'Shipped' %}
+                    <span class="badge status-shipped">{{ order.status }}</span>
+                    {% elif order.status == 'Cancelled' %}
+                    <span class="badge status-cancelled">{{ order.status }}</span>
+                    {% else %}
+                    <span class="badge status-pending">{{ order.status }}</span>
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="order-items">
+                  {% for item in order.items.all|slice:":2" %}
+                  <div class="order-item d-flex justify-content-between mb-2">
+                    <div><strong>{{ item.product_name }}</strong><br><small>Quantity: {{ item.quantity }}</small></div>
+                    <div>₹{{ item.price|floatformat:0 }}</div>
+                  </div>
+                  {% endfor %}
+                  {% if order.items.count > 2 %}
+                  <div class="text-muted small">+{{ order.items.count|add:"-2" }} more items</div>
+                  {% endif %}
+                </div>
+                <div class="order-footer mt-3">
+                  <a href="{% url 'order_detail' order.id %}" class="btn btn-sm btn-outline-secondary view-order-details">View Details</a>
+                </div>
+              </div>
+              {% empty %}
+              <div class="text-center py-5">
+                <i class="fas fa-shopping-bag fa-3x text-muted mb-3"></i>
+                <h5>No orders yet</h5>
+                <p class="text-muted">Start shopping to see your orders here!</p>
+                <a href="{% url 'shop' %}" class="btn btn-gold mt-2">Shop Now</a>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Security Section -->
+          <div id="securitySection" class="profile-section">
+            <div class="section-header">
+              <h3><i class="fas fa-lock me-2"></i> Account Security</h3>
+              <p>Manage your password and security settings</p>
+            </div>
+            <div class="section-card">
+              <form method="POST" action="{% url 'change_password' %}" id="changePasswordForm">
+                {% csrf_token %}
+                <div class="row g-3">
+                  <div class="col-md-12">
+                    <label class="form-label">Current Password</label>
+                    <div class="input-group-with-icon">
+                      <span class="input-icon"><i class="fas fa-lock"></i></span>
+                      <input type="password" class="form-control" name="current_password" id="currentPassword" placeholder="Enter current password" required>
+                      <span class="password-toggle" data-target="currentPassword">
+                        <i class="far fa-eye"></i>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">New Password</label>
+                    <div class="input-group-with-icon">
+                      <span class="input-icon"><i class="fas fa-key"></i></span>
+                      <input type="password" class="form-control" name="new_password" id="newPassword" placeholder="Enter new password" required>
+                      <span class="password-toggle" data-target="newPassword">
+                        <i class="far fa-eye"></i>
+                      </span>
+                    </div>
+                    <small class="text-muted">Password must be at least 6 characters</small>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Confirm New Password</label>
+                    <div class="input-group-with-icon">
+                      <span class="input-icon"><i class="fas fa-key"></i></span>
+                      <input type="password" class="form-control" name="confirm_password" id="confirmPassword" placeholder="Confirm new password" required>
+                      <span class="password-toggle" data-target="confirmPassword">
+                        <i class="far fa-eye"></i>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="mt-4">
+                  <button type="submit" class="btn btn-gold">Change Password <i class="fas fa-save ms-2"></i></button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Logout Section -->
+          <div id="logoutSection" class="profile-section">
+            <div class="section-card text-center">
+              <div class="logout-content">
+                <i class="fas fa-sign-out-alt fa-4x text-gold mb-3"></i>
+                <h3>Ready to Leave?</h3>
+                <p>You will be redirected to the home page after logging out.</p>
+                <form method="POST" action="{% url 'logout' %}" id="logoutForm" style="display: inline;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-danger btn-lg" id="logoutBtn">Logout <i class="fas fa-sign-out-alt ms-2"></i></button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Add Address Modal -->
+  <div class="modal fade" id="addAddressModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header border-0">
+          <h5 class="modal-title">Add New Address</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" action="{% url 'add_address' %}" id="addAddressForm">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label class="form-label">Address Name (e.g., Home, Office)</label>
+              <input type="text" class="form-control" name="name" placeholder="Enter address name" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Full Name</label>
+              <input type="text" class="form-control" name="full_name" placeholder="Enter full name" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Address Line 1</label>
+              <input type="text" class="form-control" name="address_line1" placeholder="Street address" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Address Line 2 (Optional)</label>
+              <input type="text" class="form-control" name="address_line2" placeholder="Apartment, suite, etc.">
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">City</label>
+                <input type="text" class="form-control" name="city" placeholder="City" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">State</label>
+                <input type="text" class="form-control" name="state" placeholder="State" required>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">PIN Code</label>
+                <input type="text" class="form-control" name="pincode" placeholder="PIN Code" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Phone Number</label>
+                <input type="tel" class="form-control" name="phone" placeholder="Phone number" required>
+              </div>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" name="is_default" id="setDefault">
+              <label class="form-check-label" for="setDefault">Set as default address</label>
+            </div>
+            <div class="modal-footer border-0 px-0 pb-0">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-gold">Save Address</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Address Modal -->
+  <div class="modal fade" id="editAddressModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header border-0">
+          <h5 class="modal-title">Edit Address</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" action="#" id="editAddressForm">
+            {% csrf_token %}
+            <input type="hidden" name="address_id" id="editAddressId">
+            <div class="mb-3">
+              <label class="form-label">Address Name (e.g., Home, Office)</label>
+              <input type="text" class="form-control" name="name" id="editAddressName" placeholder="Enter address name" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Full Name</label>
+              <input type="text" class="form-control" name="full_name" id="editFullName" placeholder="Enter full name" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Address Line 1</label>
+              <input type="text" class="form-control" name="address_line1" id="editAddressLine1" placeholder="Street address" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Address Line 2 (Optional)</label>
+              <input type="text" class="form-control" name="address_line2" id="editAddressLine2" placeholder="Apartment, suite, etc.">
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">City</label>
+                <input type="text" class="form-control" name="city" id="editCity" placeholder="City" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">State</label>
+                <input type="text" class="form-control" name="state" id="editState" placeholder="State" required>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">PIN Code</label>
+                <input type="text" class="form-control" name="pincode" id="editPincode" placeholder="PIN Code" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Phone Number</label>
+                <input type="tel" class="form-control" name="phone" id="editPhone" placeholder="Phone number" required>
+              </div>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" name="is_default" id="editSetDefault">
+              <label class="form-check-label" for="editSetDefault">Set as default address</label>
+            </div>
+            <div class="modal-footer border-0 px-0 pb-0">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-gold">Update Address</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% include 'includes/footer.html' %}
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{% static 'js/script.js' %}"></script>
+  <script src="{% static 'js/header.js' %}"></script>
+  <script src="{% static 'js/footer.js' %}"></script>
+</body>
+</html>
