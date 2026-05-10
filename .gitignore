@@ -4,4 +4,4 @@ __pycache__/
 
 .env
 staticfiles/
-media/
+.DS_Store
